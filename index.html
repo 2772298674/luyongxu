@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="小英的粉色世界">
+    <meta name="theme-color" content="#ffd1dc">
+    <meta name="description" content="专属于小英的粉色少女心世界 💖">
+    <meta property="og:title" content="💖 小英的粉色世界 💖">
+    <meta property="og:description" content="专属于小英的粉色少女心世界">
+    <meta property="og:type" content="website">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect fill='%23ffb6c1' width='180' height='180' rx='40'/><text fill='white' x='90' y='110' text-anchor='middle' font-size='80'>💖</text></svg>">
+    <title>💖 小英的粉色世界 💖</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pink-deep: #ff1493;
+            --pink-main: #ff69b4;
+            --pink-soft: #ff85b3;
+            --pink-light: #ffb6c1;
+            --pink-pale: #ffe4e1;
+            --pink-bg: #fff0f5;
+            --rose: #ff5a9d;
+            --white: #ffffff;
+            --gold: #ffd700;
+            --shadow: 0 8px 32px rgba(255, 105, 180, 0.25);
+            --shadow-sm: 0 4px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ====== 全局滚动条 ====== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffe4e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff69b4, #ffb6c1);
+            border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', sans-serif;
+            background: #ffd1dc;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(255,182,193,0.6) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,105,180,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(255,228,225,0.7) 0%, transparent 50%),
+                linear-gradient(135deg, #ffd1dc 0%, #f8c8dc 30%, #fce4ec 60%, #ffd1dc 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ====== 飘落花瓣 ====== */
+        .petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .petal {
+            position: absolute;
+            top: -60px;
+            animation: fall linear infinite;
+            opacity: 0.7;
+            font-size: 24px;
+            filter: blur(0.5px);
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-60px) rotate(0deg) translateX(0);
+                opacity: 0.9;
+            }
+            25% {
+                transform: translateY(25vh) rotate(90deg) translateX(40px);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) translateX(-30px);
+                opacity: 0.5;
+            }
+            75% {
+                transform: translateY(75vh) rotate(270deg) translateX(20px);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) translateX(-10px);
+                opacity: 0;
+            }
+        }
+
+        /* ====== 浮动心形背景 ====== */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .float-heart {
+            position: absolute;
+            animation: floatUp 8s ease-in infinite;
+            opacity: 0;
+            font-size: 20px;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ====== 欢迎遮罩 ====== */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc 0%, #f8c8dc 40%, #ffb6c1 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .welcome-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+        .welcome-box {
+            text-align: center;
+            background: rgba(255,255,255,0.85);
+            padding: 60px 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255,105,180,0.3);
+            animation: welcomePulse 2s ease-in-out infinite;
+            border: 3px solid rgba(255,105,180,0.3);
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,105,180,0.1), transparent, rgba(255,182,193,0.1), transparent);
+            animation: welcomeSpin 6s linear infinite;
+        }
+        @keyframes welcomeSpin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes welcomePulse {
+            0%,100% { transform: scale(1); box-shadow: 0 20px 60px rgba(255,105,180,0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 25px 70px rgba(255,105,180,0.45); }
+        }
+        .welcome-box > * {
+            position: relative;
+            z-index: 1;
+        }
+        .welcome-icon {
+            font-size: 80px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .welcome-title {
+            font-size: 28px;
+            color: #ff5a9d;
+            margin: 15px 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255,105,180,0.3);
+        }
+        .welcome-subtitle {
+            font-size: 15px;
+            color: #d4839a;
+            margin-bottom: 25px;
+        }
+        .enter-btn {
+            padding: 16px 55px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff85b3);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255,105,180,0.4);
+            transition: all 0.3s;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .enter-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255,105,180,0.55);
+            background: linear-gradient(135deg, #ff5a9d, #ff69b4);
+        }
+        .enter-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ====== 主布局 ====== */
+        .app-container {
+            display: flex;
+            gap: 25px;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ====== 左侧玩具栏 ====== */
+        .toy-sidebar {
+            width: 200px;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        .sidebar-banner {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,228,225,0.9));
+            border-radius: 25px;
+            padding: 18px 10px;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid rgba(255,105,180,0.2);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar-banner::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,105,180,0.1);
+            border-radius: 50%;
+        }
+        .sidebar-name {
+            font-size: 26px;
+            color: #ff5a9d;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255,105,180,0.3);
+            position: relative;
+        }
+        .sidebar-name .crown {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+        .sidebar-heart {
+            font-size: 13px;
+            color: #ff85b3;
+            margin-top: 2px;
+        }
+
+        .toy-card {
+            width: 100%;
+            background: rgba(255,255,255,0.9);
+            border-radius: 22px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 3px solid #fff;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .toy-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(255,105,180,0.35);
+            border-color: #ffb6c1;
+        }
+        .toy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 60%, rgba(255,105,180,0.08));
+            pointer-events: none;
+            z-index: 1;
+        }
+        .toy-card:nth-child(2) { animation: cardSlideIn 0.6s ease-out 0.2s both; }
+        .toy-card:nth-child(3) { animation: cardSlideIn 0.6s ease-out 0.35s both; }
+        .toy-card:nth-child(4) { animation: cardSlideIn 0.6s ease-out 0.5s both; }
+        .toy-card:nth-child(5) { animation: cardSlideIn 0.6s ease-out 0.65s both; }
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .toy-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .toy-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            border-radius: 16px;
+        }
+        .toy-card:hover .toy-img {
+            transform: scale(1.08);
+        }
+        .toy-label {
+            font-size: 13px;
+            color: #ff69b4;
+            margin-top: 8px;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        .toy-sparkle {
+            position: absolute;
+            font-size: 14px;
+            animation: sparkleFloat 2s ease-in-out infinite;
+            z-index: 3;
+        }
+        .toy-sparkle:nth-child(1) { top: 8px; left: 8px; animation-delay: 0s; }
+        .toy-sparkle:nth-child(2) { top: 8px; right: 8px; animation-delay: 0.7s; }
+        .toy-sparkle:nth-child(3) { bottom: 30px; left: 12px; animation-delay: 1.4s; }
+        @keyframes sparkleFloat {
+            0%,100% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+            50% { transform: translateY(-8px) scale(1.2); opacity: 1; }
+        }
+
+        /* ====== 主内容区 ====== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* 顶部标题 */
+        .main-header {
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 30px 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,105,180,0.15);
+        }
+        .main-header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff69b4, #ffb6c1, #ff69b4, transparent);
+            border-radius: 2px;
+        }
+        .header-glow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: rgba(255,105,180,0.15);
+            border-radius: 50%;
+            filter: blur(20px);
+        }
+        .header-icon-row {
+            font-size: 36px;
+            margin-bottom: 10px;
+            animation: headerBounce 2s ease-in-out infinite;
+        }
+        @keyframes headerBounce {
+            0%,100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+            60% { transform: translateY(0); }
+        }
+        .header-title {
+            font-size: 30px;
+            color: #ff5a9d;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+        .header-title::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffb6c1, transparent);
+        }
+        .header-date {
+            font-size: 14px;
+            color: #d4839a;
+            margin-top: 10px;
+        }
+
+        /* 音乐播放器 */
+        .music-card {
+            background: rgba(255,255,255,0.85);
+            border-radius: 20px;
+            padding: 20px 30px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 2px solid rgba(255,105,180,0.1);
+            flex-wrap: wrap;
+        }
+        .music-icon-wrap {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #ffb6c1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            animation: musicPulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes musicPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,105,180,0.5); }
+            50% { box-shadow: 0 0 0 18px rgba(255,105,180,0); }
+        }
+        .music-info {
+            flex: 1;
+            min-width: 180px;
+        }
+        .music-title {
+            font-size: 16px;
+            color: #ff5a9d;
+            font-weight: bold;
+        }
+        .music-desc {
+            font-size: 12px;
+            color: #d4839a;
+            margin-top: 2px;
+        }
+        .music-eq {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+            height: 20px;
+        }
+        .music-eq span {
+            width: 3px;
+            background: #ff69b4;
+            border-radius: 2px;
+            animation: eqAnim 0.8s ease-in-out infinite alternate;
+            display: inline-block;
+        }
+        .music-eq span:nth-child(1) { height: 12px; animation-delay: 0s; }
+        .music-eq span:nth-child(2) { height: 18px; animation-delay: 0.2s; }
+        .music-eq span:nth-child(3) { height: 10px; animation-delay: 0.4s; }
+        .music-eq span:nth-child(4) { height: 20px; animation-delay: 0.15s; }
+        .music-eq span:nth-child(5) { height: 14px; animation-delay: 0.35s; }
+        .music-eq span:nth-child(6) { height: 16px; animation-delay: 0.25s; }
+        @keyframes eqAnim {
+            to { transform: scaleY(0.3); }
+        }
+        .music-toggle {
+            padding: 10px 22px;
+            background: linear-gradient(135deg, #ff69b4, #ff85b3);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .music-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,105,180,0.4);
+        }
+        .music-toggle.playing {
+            background: linear-gradient(135deg, #ff4081, #ff69b4);
+        }
+
+        /* 内容卡片 */
+        .content-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 35px 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 2px solid rgba(255,105,180,0.12);
+        }
+        .content-card:hover {
+            box-shadow: 0 12px 40px rgba(255,105,180,0.35);
+            transform: translateY(-2px);
+        }
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30px;
+            right: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff69b4, #ffb6c1, #ff69b4);
+            border-radius: 0 0 3px 3px;
+        }
+        .card-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #ffb6c1;
+            border-style: solid;
+            pointer-events: none;
+        }
+        .card-corner.tl { top: 15px; left: 15px; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
+        .card-corner.br { bottom: 15px; right: 15px; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .card-title {
+            font-size: 22px;
+            color: #ff5a9d;
+            font-weight: bold;
+            margin-bottom: 18px;
+            position: relative;
+            display: inline-block;
+        }
+        .card-text {
+            font-size: 16px;
+            line-height: 2;
+            color: #666;
+            background: linear-gradient(135deg, #fff5f8, #fff0f6);
+            padding: 22px 25px;
+            border-radius: 16px;
+            border-left: 4px solid #ff85b3;
+            position: relative;
+        }
+        .card-text .highlight {
+            color: #ff4081;
+            font-weight: bold;
+            background: linear-gradient(180deg, transparent 60%, rgba(255,182,193,0.4) 60%);
+            padding: 0 3px;
+        }
+
+        /* ====== 食物抽取区 ====== */
+        .food-section {
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 35px 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 2px solid rgba(255,105,180,0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .food-section::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30px;
+            right: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff69b4, #ffb6c1, #ff69b4);
+            border-radius: 0 0 3px 3px;
+        }
+        .food-section-title {
+            font-size: 22px;
+            color: #ff5a9d;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .food-section-sub {
+            font-size: 14px;
+            color: #d4839a;
+            margin-bottom: 25px;
+        }
+        .slot-machine {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .slot-window {
+            width: 180px;
+            height: 70px;
+            background: linear-gradient(135deg, #fff5f8, #fff0f6);
+            border: 3px solid #ffb6c1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff4081;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(255,105,180,0.1);
+        }
+        .slot-content {
+            transition: transform 0.1s;
+        }
+        .slot-content.spinning {
+            animation: slotSpin 0.15s linear infinite;
+        }
+        @keyframes slotSpin {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+        .food-btn {
+            padding: 16px 50px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff85b3);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255,105,180,0.4);
+            transition: all 0.3s;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .food-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            transform: translateX(-100%);
+        }
+        .food-btn:hover::after {
+            transform: translateX(100%);
+        }
+        .food-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255,105,180,0.55);
+        }
+        .food-btn:active {
+            transform: scale(0.95);
+        }
+        .food-result {
+            margin-top: 18px;
+            min-height: 45px;
+        }
+        .food-result-display {
+            font-size: 26px;
+            color: #ff4081;
+            font-weight: bold;
+            animation: resultPop 0.5s ease-out;
+            display: inline-block;
+        }
+        @keyframes resultPop {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .food-emoji-rain {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            animation: emojiDrop 2s ease-in forwards;
+            font-size: 30px;
+        }
+        @keyframes emojiDrop {
+            0% { transform: translateY(-60px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* 美食历史 */
+        .food-history {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .food-history-tag {
+            padding: 6px 16px;
+            background: #fff0f6;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #ff69b4;
+            border: 1px solid #ffb6c1;
+            animation: tagIn 0.3s ease-out;
+        }
+        @keyframes tagIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            body {
+                padding: 0;
+            }
+            .app-container {
+                flex-direction: column;
+                padding: 8px;
+                gap: 12px;
+            }
+            .toy-sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: 100%;
+                min-width: auto;
+                position: static;
+                justify-content: center;
+                gap: 8px;
+                max-height: none;
+                padding: 4px 0;
+            }
+            .sidebar-banner {
+                width: 100%;
+                padding: 12px 10px;
+            }
+            .sidebar-name {
+                font-size: 20px;
+            }
+            .toy-card {
+                width: 80px;
+                flex-shrink: 0;
+                padding: 8px;
+                border-radius: 16px;
+            }
+            .toy-card:hover {
+                transform: none;
+            }
+            .toy-img-wrapper {
+                aspect-ratio: 1;
+                border-radius: 12px;
+            }
+            .toy-label {
+                font-size: 11px;
+                margin-top: 4px;
+            }
+            .toy-sparkle {
+                font-size: 10px;
+            }
+            .main-content {
+                gap: 12px;
+            }
+            .main-header {
+                padding: 20px 16px;
+                border-radius: 20px;
+            }
+            .header-title {
+                font-size: 20px;
+            }
+            .header-icon-row {
+                font-size: 24px;
+            }
+            .header-date {
+                font-size: 12px;
+            }
+            .content-card, .food-section {
+                padding: 20px 16px;
+                border-radius: 20px;
+            }
+            .card-title {
+                font-size: 18px;
+            }
+            .card-text {
+                font-size: 14px;
+                padding: 16px;
+                line-height: 1.8;
+            }
+            .music-card {
+                padding: 14px 16px;
+                gap: 12px;
+                border-radius: 18px;
+            }
+            .music-icon-wrap {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            .music-title {
+                font-size: 14px;
+            }
+            .music-toggle {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .slot-machine {
+                gap: 8px;
+            }
+            .slot-window {
+                width: 130px;
+                height: 50px;
+                font-size: 16px;
+                border-radius: 16px;
+            }
+            .food-btn {
+                padding: 14px 30px;
+                font-size: 17px;
+                letter-spacing: 1px;
+            }
+            .food-section-title {
+                font-size: 18px;
+            }
+            .food-result-display {
+                font-size: 20px;
+            }
+            .welcome-box {
+                padding: 35px 25px;
+                margin: 20px;
+            }
+            .welcome-title {
+                font-size: 22px;
+            }
+            .welcome-icon {
+                font-size: 55px;
+            }
+            .enter-btn {
+                padding: 14px 35px;
+                font-size: 17px;
+            }
+            .petal {
+                font-size: 16px !important;
+            }
+        }
+
+        /* 小屏手机优化 */
+        @media (max-width: 480px) {
+            .toy-card {
+                width: 65px;
+                padding: 6px;
+                border-radius: 14px;
+            }
+            .toy-label {
+                font-size: 10px;
+            }
+            .header-title {
+                font-size: 18px;
+            }
+            .card-title {
+                font-size: 16px;
+            }
+            .card-text {
+                font-size: 13px;
+                padding: 14px;
+            }
+            .slot-window {
+                width: 110px;
+                height: 44px;
+                font-size: 14px;
+            }
+            .food-btn {
+                padding: 12px 25px;
+                font-size: 15px;
+            }
+            .food-section {
+                padding: 16px 12px;
+            }
+            .content-card {
+                padding: 16px 12px;
+            }
+            .music-card {
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+            }
+            .music-info {
+                text-align: center;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .toy-card:hover {
+                transform: none;
+            }
+            .toy-card:active {
+                transform: scale(0.96);
+                transition: transform 0.1s;
+            }
+            .food-btn:hover {
+                transform: none;
+            }
+            .food-btn:active {
+                transform: scale(0.95);
+            }
+            .enter-btn:hover {
+                transform: none;
+            }
+            .enter-btn:active {
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== 欢迎遮罩 ====== -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-box">
+            <div class="welcome-icon">💖</div>
+            <div class="welcome-title">欢迎来到小英的粉色世界</div>
+            <div class="welcome-subtitle">✨ 点击下方按钮，进入专属的甜蜜时光 ✨</div>
+            <button class="enter-btn" onclick="enterSite()">
+                <i class="fa-solid fa-heart"></i> 点 击 进 入 <i class="fa-solid fa-heart"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== 飘落花瓣 ====== -->
+    <div class="petals-container" id="petalsContainer"></div>
+
+    <!-- ====== 浮动心形 ====== -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- ====== 主布局 ====== -->
+    <div class="app-container">
+
+        <!-- 左侧玩具栏 -->
+        <aside class="toy-sidebar">
+            <div class="sidebar-banner">
+                <div class="sidebar-name">
+                    <span class="crown">👑</span>
+                    小英
+                </div>
+                <div class="sidebar-heart">💗 永远的公主 💗</div>
+            </div>
+
+            <div class="toy-card">
+                <div class="toy-img-wrapper">
+                    <span class="toy-sparkle">✨</span>
+                    <span class="toy-sparkle">💫</span>
+                    <span class="toy-sparkle">⭐</span>
+                    <img src="kitty.jpg.jpg" alt="Hello Kitty" class="toy-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><rect fill=%22%23ffb6c1%22 width=%22150%22 height=%22150%22 rx=%2216%22/><text fill=%22white%22 x=%2275%22 y=%2285%22 text-anchor=%22middle%22 font-size=%2250%22>🐱</text></svg>'">
+                </div>
+                <div class="toy-label">🌸 Hello Kitty</div>
+            </div>
+
+            <div class="toy-card">
+                <div class="toy-img-wrapper">
+                    <span class="toy-sparkle">✨</span>
+                    <span class="toy-sparkle">💫</span>
+                    <span class="toy-sparkle">⭐</span>
+                    <img src="caomeixiong.jpg.jpg" alt="草莓熊" class="toy-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><rect fill=%22%23ff85b3%22 width=%22150%22 height=%22150%22 rx=%2216%22/><text fill=%22white%22 x=%2275%22 y=%2285%22 text-anchor=%22middle%22 font-size=%2250%22>🐻</text></svg>'">
+                </div>
+                <div class="toy-label">🍓 草莓熊</div>
+            </div>
+
+            <div class="toy-card">
+                <div class="toy-img-wrapper">
+                    <span class="toy-sparkle">✨</span>
+                    <span class="toy-sparkle">💫</span>
+                    <span class="toy-sparkle">⭐</span>
+                    <img src="meiledi.jpg.jpg" alt="美乐蒂" class="toy-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><rect fill=%22%23ffb6c1%22 width=%22150%22 height=%22150%22 rx=%2216%22/><text fill=%22white%22 x=%2275%22 y=%2285%22 text-anchor=%22middle%22 font-size=%2250%22>🐰</text></svg>'">
+                </div>
+                <div class="toy-label">🎀 美乐蒂</div>
+            </div>
+
+            <div class="toy-card">
+                <div class="toy-img-wrapper">
+                    <span class="toy-sparkle">✨</span>
+                    <span class="toy-sparkle">💫</span>
+                    <span class="toy-sparkle">⭐</span>
+                    <img src="xiaocaixi.jpg.jpg" alt="小彩曦" class="toy-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><rect fill=%22%23f8c8dc%22 width=%22150%22 height=%22150%22 rx=%2216%22/><text fill=%22white%22 x=%2275%22 y=%2285%22 text-anchor=%22middle%22 font-size=%2250%22>🌈</text></svg>'">
+                </div>
+                <div class="toy-label">🌈 小彩曦</div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+
+            <!-- 顶部标题 -->
+            <div class="main-header">
+                <div class="header-glow"></div>
+                <div class="header-icon-row">💖 🌸 💗 🌷 💖</div>
+                <h1 class="header-title">✨ 致我最可爱的小英 ✨</h1>
+                <div class="header-date" id="headerDate"></div>
+            </div>
+
+            <!-- 音乐播放器 -->
+            <div class="music-card">
+                <div class="music-icon-wrap">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div class="music-info">
+                    <div class="music-title">🎵 特别的人 - 方大同</div>
+                    <div class="music-desc">专属于小英的温柔旋律</div>
+                    <div class="music-eq">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+                <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+                    <i class="fa-solid fa-play"></i> 播放音乐
+                </button>
+                <audio id="bgMusic" loop preload="metadata">
+                    <source src="特别的人.mp3.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <!-- 相识 -->
+            <div class="content-card">
+                <div class="card-corner tl"></div>
+                <div class="card-corner br"></div>
+                <div class="card-icon">🌸</div>
+                <h2 class="card-title">💞 我们的相识</h2>
+                <div class="card-text">
+                    还记得我们第一次相遇的瞬间，就像<span class="highlight">粉色的泡泡</span>轻轻飘进我的世界，温柔又美好。<br><br>
+                    从陌生到熟悉，从寒暄到交心，每一次相处的时光都充满了<span class="highlight">温暖与甜蜜</span>。<br><br>
+                    世界上有那么多人，但我的目光却总是<span class="highlight">不自觉地停留在你身上</span>。遇见你，是我最幸运的事情，往后的日子，只想一直陪着可爱的你，看遍这世间的美好。🌷
+                </div>
+            </div>
+
+            <!-- 夸赞 -->
+            <div class="content-card">
+                <div class="card-corner tl"></div>
+                <div class="card-corner br"></div>
+                <div class="card-icon">💗</div>
+                <h2 class="card-title">💖 想对小英说的话</h2>
+                <div class="card-text">
+                    小英你真的<span class="highlight">超级超级可爱</span>！温柔又善良，像小太阳一样照亮身边的每一个人 ☀️<br><br>
+                    你笑起来的时候<span class="highlight">甜甜的</span>，让人忍不住心动，性格软乎乎的，满满的<span class="highlight">少女感</span> 💕<br><br>
+                    你懂事又美好，是全世界<span class="highlight">最珍贵、最值得被宠爱</span>的女孩子！<br><br>
+                    不管未来怎样，我都想<span class="highlight">永远偏爱你</span>，把最好的温柔都留给你呀！🌟
+                </div>
+            </div>
+
+            <!-- 美食抽取 -->
+            <div class="food-section">
+                <div class="card-corner tl"></div>
+                <div class="card-corner br"></div>
+                <div class="food-section-title">🍓 今天想吃什么？ 🍓</div>
+                <div class="food-section-sub">让小英的专属美食魔法来帮你决定吧 ✨</div>
+
+                <div class="slot-machine">
+                    <span style="font-size:28px;">🎰</span>
+                    <div class="slot-window">
+                        <div class="slot-content" id="slotContent">点击抽取</div>
+                    </div>
+                    <span style="font-size:28px;">🎰</span>
+                </div>
+
+                <button class="food-btn" id="foodBtn" onclick="getRandomFood()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 点击抽取今日美食 <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <div class="food-result" id="foodResult"></div>
+                <div class="food-history" id="foodHistory"></div>
+            </div>
+
+            <!-- 资源列表 -->
+            <div class="content-card">
+                <div class="card-corner tl"></div>
+                <div class="card-corner br"></div>
+                <div class="card-icon">📁</div>
+                <h2 class="card-title">📂 资源与文件（点击打开）</h2>
+                <div class="card-text">
+                    <ul style="list-style:none;padding:0;margin:0;">
+                        <li><a href="部署指南.md" style="color:#ff1493;text-decoration:none;font-weight:bold;">📘 部署指南.md</a></li>
+                        <li><a href="特别的人.mp3.mp3" style="color:#ff1493;text-decoration:none;font-weight:bold;">🎵 特别的人.mp3.mp3</a></li>
+                        <li><a href="kitty.jpg.jpg" style="color:#ff1493;text-decoration:none;font-weight:bold;">🖼️ kitty.jpg.jpg</a></li>
+                        <li><a href="caomeixiong.jpg.jpg" style="color:#ff1493;text-decoration:none;font-weight:bold;">🖼️ caomeixiong.jpg.jpg</a></li>
+                        <li><a href="meiledi.jpg.jpg" style="color:#ff1493;text-decoration:none;font-weight:bold;">🖼️ meiledi.jpg.jpg</a></li>
+                        <li><a href="xiaocaixi.jpg.jpg" style="color:#ff1493;text-decoration:none;font-weight:bold;">🖼️ xiaocaixi.jpg.jpg</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ====== 全局变量 ======
+        let musicPlaying = false;
+        const foodList = [
+            "🍓 草莓蛋糕", "🧋 珍珠奶茶", "🍦 草莓冰淇淋", "🍫 生巧克力",
+            "🍪 马卡龙", "🍣 三文鱼寿司", "🍲 暖暖火锅", "🍗 韩式炸鸡",
+            "🥧 葡式蛋挞", "🥭 芒果班戟", "🍩 草莓甜甜圈", "🥞 舒芙蕾",
+            "🍰 提拉米苏", "🧁 杯子蛋糕", "🍜 豚骨拉面", "🥩 和牛烤肉",
+            "🍕 芝士披萨", "🌮 墨西哥卷", "🍝 奶油意面", "🦞 蒜蓉龙虾"
+        ];
+        const foodHistory = [];
+
+        // ====== 飘落花瓣 ======
+        function createPetals() {
+            const container = document.getElementById('petalsContainer');
+            const emojis = ['🌸', '💮', '🌷', '🩷', '🎀', '💗', '✨', '🪷', '🏵️', '💐'];
+            for (let i = 0; i < 30; i++) {
+                const petal = document.createElement('span');
+                petal.className = 'petal';
+                petal.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDuration = (8 + Math.random() * 14) + 's';
+                petal.style.animationDelay = Math.random() * 12 + 's';
+                petal.style.fontSize = (16 + Math.random() * 22) + 'px';
+                container.appendChild(petal);
+            }
+        }
+
+        // ====== 浮动心形 ======
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const hearts = ['💖', '💗', '💕', '💝', '🩷', '💓', '❤️‍🔥', '🫶'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('span');
+                heart.className = 'float-heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 90 + '%';
+                heart.style.animationDuration = (6 + Math.random() * 10) + 's';
+                heart.style.animationDelay = Math.random() * 10 + 's';
+                heart.style.fontSize = (16 + Math.random() * 22) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // ====== 进入网站 ======
+        function enterSite() {
+            document.getElementById('welcomeOverlay').classList.add('hidden');
+            const music = document.getElementById('bgMusic');
+            music.play().then(() => {
+                musicPlaying = true;
+                updateMusicBtn();
+            }).catch(() => {
+                console.log('自动播放被浏览器限制，请手动点击播放');
+            });
+        }
+
+        // ====== 音乐控制 ======
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            if (musicPlaying) {
+                music.pause();
+                musicPlaying = false;
+                updateMusicBtn();
+            } else {
+                music.play().then(() => {
+                    musicPlaying = true;
+                    updateMusicBtn();
+                }).catch(() => {
+                    musicPlaying = false;
+                    updateMusicBtn();
+                });
+            }
+        }
+
+        function updateMusicBtn() {
+            const btn = document.getElementById('musicToggle');
+            if (musicPlaying) {
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i> 暂停音乐';
+                btn.classList.add('playing');
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> 播放音乐';
+                btn.classList.remove('playing');
+            }
+        }
+
+        // 监听音频结束（以防万一）
+        document.getElementById('bgMusic').addEventListener('pause', function() {
+            if (!this.ended) {
+                musicPlaying = false;
+                updateMusicBtn();
+            }
+        });
+        document.getElementById('bgMusic').addEventListener('play', function() {
+            musicPlaying = true;
+            updateMusicBtn();
+        });
+
+        // ====== 美食抽取 ======
+        function getRandomFood() {
+            const slotContent = document.getElementById('slotContent');
+            const foodBtn = document.getElementById('foodBtn');
+            const foodResult = document.getElementById('foodResult');
+
+            // 禁用按钮防连点
+            foodBtn.disabled = true;
+            foodBtn.style.opacity = '0.6';
+            foodBtn.style.pointerEvents = 'none';
+
+            // 开始滚动动画
+            slotContent.classList.add('spinning');
+            foodResult.innerHTML = '';
+
+            let spinCount = 0;
+            const maxSpins = 20;
+            let spinSpeed = 60;
+
+            function spin() {
+                const randomFood = foodList[Math.floor(Math.random() * foodList.length)];
+                slotContent.textContent = randomFood;
+                spinCount++;
+
+                if (spinCount < maxSpins) {
+                    spinSpeed += spinCount * 5;
+                    setTimeout(spin, spinSpeed);
+                } else {
+                    // 停止滚动，显示最终结果
+                    slotContent.classList.remove('spinning');
+                    const finalFood = foodList[Math.floor(Math.random() * foodList.length)];
+                    slotContent.textContent = finalFood;
+
+                    // 显示结果
+                    const resultDisplay = document.createElement('span');
+                    resultDisplay.className = 'food-result-display';
+                    resultDisplay.textContent = '🥳 今天就吃：' + finalFood + ' 🥳';
+                    foodResult.appendChild(resultDisplay);
+
+                    // 添加到历史
+                    foodHistory.unshift(finalFood);
+                    if (foodHistory.length > 8) foodHistory.pop();
+                    updateFoodHistory();
+
+                    // 彩带/emoji雨效果
+                    createEmojiRain(finalFood);
+
+                    // 恢复按钮
+                    foodBtn.disabled = false;
+                    foodBtn.style.opacity = '1';
+                    foodBtn.style.pointerEvents = 'auto';
+                }
+            }
+
+            spin();
+        }
+
+        // ====== Emoji雨效果 ======
+        function createEmojiRain(food) {
+            const emojis = ['🎉', '✨', '💖', '🌸', '🎀', '💗', '🩷', '🌟', '💝', '🍓'];
+            const foodEmoji = food.match(/[\p{Emoji}]/gu);
+            if (foodEmoji) emojis.push(...foodEmoji);
+
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('span');
+                    el.className = 'food-emoji-rain';
+                    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.style.left = (10 + Math.random() * 80) + '%';
+                    el.style.top = -(20 + Math.random() * 40) + 'px';
+                    el.style.fontSize = (18 + Math.random() * 24) + 'px';
+                    el.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+                    document.body.appendChild(el);
+
+                    setTimeout(() => el.remove(), 2500);
+                }, i * 80);
+            }
+        }
+
+        // ====== 更新美食历史 ======
+        function updateFoodHistory() {
+            const container = document.getElementById('foodHistory');
+            container.innerHTML = foodHistory.map((food, i) =>
+                '<span class="food-history-tag" style="animation-delay:' + (i * 0.05) + 's">' + food + '</span>'
+            ).join('');
+        }
+
+        // ====== 更新日期 ======
+        function updateDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('headerDate').textContent =
+                '📅 ' + now.toLocaleDateString('zh-CN', options) + ' | 今天也要开心哦 💕';
+        }
+
+        // ====== 键盘快捷键 ======
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                if (document.getElementById('welcomeOverlay').classList.contains('hidden')) {
+                    getRandomFood();
+                }
+            }
+            if (e.key === 'm' || e.key === 'M') {
+                if (document.getElementById('welcomeOverlay').classList.contains('hidden')) {
+                    toggleMusic();
+                }
+            }
+        });
+
+        // ====== 初始化 ======
+        function init() {
+            createPetals();
+            createFloatingHearts();
+            updateDate();
+            // 每秒更新日期（用于跨天）
+            setInterval(updateDate, 60000);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+
+        // 点击页面任意位置也可触发音乐（浏览器策略兼容）
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('welcomeOverlay');
+            if (overlay.classList.contains('hidden') && !musicPlaying) {
+                const music = document.getElementById('bgMusic');
+                music.play().then(() => {
+                    musicPlaying = true;
+                    updateMusicBtn();
+                }).catch(() => {});
+            }
+        }, { once: false });
+
+        console.log('💖 小英的粉色世界 - 已就绪 💖');
+        console.log('🌸 快捷键：空格键 = 抽美食 | M键 = 播放/暂停音乐 🌸');
+    </script>
+</body>
+</html>
